@@ -79,15 +79,6 @@ public class HomeActivity extends AppCompatActivity {
                 Intent gallery = new Intent(Intent.ACTION_PICK,
                         MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
 
-                // Create a File reference to access to future access
-                photoFile = getPhotoFileUri(photoFileName);
-
-                // wrap File object into a content provider
-                // required for API >= 24
-                // See https://guides.codepath.com/android/Sharing-Content-with-Intents#sharing-files-with-api-24-or-higher
-                Uri fileProvider = FileProvider.getUriForFile(v.getContext(), "com.codepath.fileprovider", photoFile);
-                gallery.putExtra(MediaStore.EXTRA_OUTPUT, fileProvider);
-
                 // If you call startActivityForResult() using an intent that no app can handle, your app will crash.
                 // So as long as the result is not null, it's safe to use the intent.
                 if (gallery.resolveActivity(getPackageManager()) != null) {
@@ -174,10 +165,8 @@ public class HomeActivity extends AppCompatActivity {
         } else if (requestCode == PICK_PHOTO_CODE) {
             // user selected image from gallery
             if (data != null) {
-                // by this point we have the camera photo on disk
-//                Bitmap selectedImage = BitmapFactory.decodeFile(photoFile.getAbsolutePath());
                 Uri photoUri = data.getData();
-//                // Do something with the photo based on Uri
+                // Do something with the photo based on Uri
                 Bitmap selectedImage = null;
                 try {
                     selectedImage = MediaStore.Images.Media.getBitmap(this.getContentResolver(), photoUri);
