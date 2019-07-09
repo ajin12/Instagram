@@ -40,6 +40,7 @@ public class HomeActivity extends AppCompatActivity {
 
     // TODO - move
     private Button btnLogout;
+    private Button btnHome;
 
     public final String APP_TAG = "MyCustomApp";
     public final static int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 1034;
@@ -63,6 +64,7 @@ public class HomeActivity extends AppCompatActivity {
 
         // TODO - move
         btnLogout = findViewById(R.id.btnLogout);
+        btnHome = findViewById(R.id.btnFeed);
 
         btnCaptureImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -85,6 +87,16 @@ public class HomeActivity extends AppCompatActivity {
                     // Bring up gallery to select a photo
                     startActivityForResult(gallery, PICK_PHOTO_CODE);
                 }
+            }
+        });
+
+        // TODO - should be for onLoginSuccess()
+        // Bring user to home feed
+        btnHome.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent home = new Intent(v.getContext(), FeedActivity.class);
+                startActivity(home);
             }
         });
 
