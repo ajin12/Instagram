@@ -25,6 +25,7 @@ import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 public class HomeActivity extends AppCompatActivity {
@@ -35,12 +36,15 @@ public class HomeActivity extends AppCompatActivity {
     private Button refreshButton;
     private Button btnCaptureImage;
     private ImageView ivPreview;
+    private Button btnLibrary;
 
     // TODO - move
     private Button btnLogout;
 
     public final String APP_TAG = "MyCustomApp";
     public final static int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 1034;
+    // PICK_PHOTO_CODE is a constant integer
+    public final static int PICK_PHOTO_CODE = 1046;
     public String photoFileName = "photo.jpg";
     File photoFile;
 
@@ -55,6 +59,7 @@ public class HomeActivity extends AppCompatActivity {
         refreshButton = findViewById(R.id.btnRefresh);
         btnCaptureImage = findViewById(R.id.btnCaptureImage);
         ivPreview = findViewById(R.id.ivPreview);
+        btnLibrary = findViewById(R.id.btnLibrary);
 
         // TODO - move
         btnLogout = findViewById(R.id.btnLogout);
@@ -63,6 +68,32 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 launchCamera();
+            }
+        });
+
+        // Trigger gallery selection for a photo
+        btnLibrary.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Create intent for picking a photo from the gallery
+                Intent gallery = new Intent(Intent.ACTION_PICK,
+                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+
+                // Create a File reference to access to future access
+                photoFile = getPhotoFileUri(photoFileName);
+
+                // wrap File object into a content provider
+                // required for API >= 24
+                // See https://guides.codepath.com/android/Sharing-Content-with-Intents#sharing-files-with-api-24-or-higher
+                Uri fileProvider = FileProvider.getUriForFile(v.getContext(), "com.codepath.fileprovider", photoFile);
+                gallery.putExtra(MediaStore.EXTRA_OUTPUT, fileProvider);
+
+                // If you call startActivityForResult() using an intent that no app can handle, your app will crash.
+                // So as long as the result is not null, it's safe to use the intent.
+                if (gallery.resolveActivity(getPackageManager()) != null) {
+                    // Bring up gallery to select a photo
+                    startActivityForResult(gallery, PICK_PHOTO_CODE);
+                }
             }
         });
 
@@ -139,6 +170,24 @@ public class HomeActivity extends AppCompatActivity {
                 ivPreview.setImageBitmap(takenImage);
             } else { // Result was a failure
                 Toast.makeText(this, "Picture wasn't taken!", Toast.LENGTH_SHORT).show();
+            }
+        } else if (requestCode == PICK_PHOTO_CODE) {
+            // user selected image from gallery
+            if (data != null) {
+                // by this point we have the camera photo on disk
+//                Bitmap selectedImage = BitmapFactory.decodeFile(photoFile.getAbsolutePath());
+                Uri photoUri = data.getData();
+//                // Do something with the photo based on Uri
+                Bitmap selectedImage = null;
+                try {
+                    selectedImage = MediaStore.Images.Media.getBitmap(this.getContentResolver(), photoUri);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                // Load the selected image into a preview
+                ivPreview.setImageBitmap(selectedImage);
+            } else { // Result was a failure
+                Toast.makeText(this, "Picture wasn't selected!", Toast.LENGTH_SHORT).show();
             }
         }
     }
