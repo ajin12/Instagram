@@ -31,6 +31,14 @@ public class MainActivity extends AppCompatActivity {
         loginBtn = findViewById(R.id.btnLogin);
         signupBtn = findViewById(R.id.btnSignup);
 
+        // if existing, access the cached current user and directly launch home activity
+        ParseUser currentUser = ParseUser.getCurrentUser();
+        if (currentUser != null) {
+            final Intent home = new Intent(MainActivity.this, HomeActivity.class);
+            startActivity(home);
+            finish();
+        }
+
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

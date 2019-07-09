@@ -36,6 +36,9 @@ public class HomeActivity extends AppCompatActivity {
     private Button btnCaptureImage;
     private ImageView ivPreview;
 
+    // TODO - move
+    private Button btnLogout;
+
     public final String APP_TAG = "MyCustomApp";
     public final static int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 1034;
     public String photoFileName = "photo.jpg";
@@ -52,6 +55,9 @@ public class HomeActivity extends AppCompatActivity {
         refreshButton = findViewById(R.id.btnRefresh);
         btnCaptureImage = findViewById(R.id.btnCaptureImage);
         ivPreview = findViewById(R.id.ivPreview);
+
+        // TODO - move
+        btnLogout = findViewById(R.id.btnLogout);
 
         btnCaptureImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -83,6 +89,19 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 loadTopPosts();
+            }
+        });
+
+        // TODO - move
+        btnLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ParseUser.logOut();
+                // bring up log in page
+                final Intent login = new Intent(HomeActivity.this, MainActivity.class);
+                startActivity(login);
+                finish();
+//                ParseUser currentUser = ParseUser.getCurrentUser(); // this will now be null
             }
         });
 
