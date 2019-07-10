@@ -1,6 +1,7 @@
 package com.example.instagram;
 
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -23,7 +24,7 @@ public class FeedActivity extends AppCompatActivity {
     boolean mFirstLoad;
 
     static final int MAX_POSTS_TO_SHOW = 20;
-
+    private SwipeRefreshLayout swipeContainer;
 
 
     @Override
@@ -48,8 +49,28 @@ public class FeedActivity extends AppCompatActivity {
         // set the adapter
         rvPost.setAdapter(mAdapter);
 
+        // Lookup the swipe container view
+        swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
+        // Setup refresh listener which triggers new data loading
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // Refresh list
+                clear();
+                populateFeed();
+                addAll(mPosts);
+                swipeContainer.setRefreshing(false);
+            }
+        });
+        // Configure the refreshing colors
+        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
+
         populateFeed();
     }
+
 
     // Query posts from Parse so we can load them into the post adapter
     void populateFeed() {
@@ -78,5 +99,17 @@ public class FeedActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    // Clean all elements of the recycler
+    public void clear() {
+        mPosts.clear();
+        mAdapter.notifyDataSetChanged();
+    }
+
+    // Add a list of items -- change to type used
+    public void addAll(List<Post> list) {
+        mPosts.addAll(list);
+        mAdapter.notifyDataSetChanged();
     }
 }
