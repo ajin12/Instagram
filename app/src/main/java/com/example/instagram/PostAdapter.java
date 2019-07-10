@@ -1,6 +1,7 @@
 package com.example.instagram;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v7.widget.RecyclerView;
@@ -56,19 +57,18 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
         holder.tvDescription.setText(post.getDescription());
         // https://stackoverflow.com/questions/32901767/load-image-from-parse-to-image-view
         // https://stackoverflow.com/questions/32529950/convert-parsefile-image-to-byte-in-android
-
         ParseFile file = (ParseFile) post.getImage();
         file.getDataInBackground(new GetDataCallback() {
             @Override
             public void done(byte[] data, ParseException e) {
-                if (e == null) {
-                    // Decode the Byte[] into Bitmap
-                    Bitmap bmp = BitmapFactory.decodeByteArray(data, 0, data.length);
-                    // Set the Bitmap into the ImageView
-                    holder.ivPhoto.setImageBitmap(bmp);
-                } else {
-                    Log.d("test", "Problem loading image");
-                }
+            if (e == null) {
+                // Decode the Byte[] into Bitmap
+                Bitmap bmp = BitmapFactory.decodeByteArray(data, 0, data.length);
+                // Set the Bitmap into the ImageView
+                holder.ivPhoto.setImageBitmap(bmp);
+            } else {
+                Log.d("test", "Problem loading image");
+            }
             }
         });
 //        Bitmap image = BitmapFactory.decodeFile(post.getImage().getUrl());
@@ -103,6 +103,23 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
             ibSave = (ImageButton) itemView.findViewById(R.id.ibSave);
             tvNumberLikes = (TextView) itemView.findViewById(R.id.tvNumberLikes);
             tvDescription = (TextView) itemView.findViewById(R.id.tvDescription);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                // get item position
+                int position = getAdapterPosition();
+                // make sure the position is valid, i.e. actually exists in the view
+                if (position != RecyclerView.NO_POSITION) {
+                    // get the post at this position
+                    Post post = mPosts.get(position);
+                    // open detail view of tweet
+                    Intent detailPost= new Intent(v.getContext(), PostDetailsActivity.class);
+                    detailPost.putExtra("id", post.getObjectId());
+                    v.getContext().startActivity(detailPost);
+                }
+                }
+            });
         }
     }
 }
