@@ -18,6 +18,8 @@ import com.parse.GetDataCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
@@ -73,6 +75,14 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
         });
 //        Bitmap image = BitmapFactory.decodeFile(post.getImage().getUrl());
 //        holder.ivPhoto.setImageBitmap(image);
+
+        holder.tvTimestamp.setText(formatDate(post.getCreatedAt()));
+    }
+
+    private String formatDate(Date date) {
+        SimpleDateFormat formatter = new SimpleDateFormat("dd MMM yyyy HH:mm");
+        String strDate = formatter.format(date);
+        return strDate;
     }
 
     @Override
@@ -90,6 +100,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
         ImageButton ibSave;
         TextView tvNumberLikes;
         TextView tvDescription;
+        TextView tvTimestamp;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -103,6 +114,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
             ibSave = (ImageButton) itemView.findViewById(R.id.ibSave);
             tvNumberLikes = (TextView) itemView.findViewById(R.id.tvNumberLikes);
             tvDescription = (TextView) itemView.findViewById(R.id.tvDescription);
+            tvTimestamp = (TextView) itemView.findViewById(R.id.tvTimestamp);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
