@@ -7,18 +7,19 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseUser;
-import com.parse.SignUpCallback;
 
 public class MainActivity extends AppCompatActivity {
 
     private EditText usernameInput;
     private EditText passwordInput;
     private Button loginBtn;
-    private Button signupBtn;
+    private TextView tvAccount;
+    private TextView tvSignup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,7 +30,8 @@ public class MainActivity extends AppCompatActivity {
         usernameInput = findViewById(R.id.etUsername);
         passwordInput = findViewById(R.id.etPassword);
         loginBtn = findViewById(R.id.btnLogin);
-        signupBtn = findViewById(R.id.btnSignup);
+        tvAccount = findViewById(R.id.tvAccount);
+        tvSignup = findViewById(R.id.tvSignup);
 
         // if existing, access the cached current user and directly launch home activity
         ParseUser currentUser = ParseUser.getCurrentUser();
@@ -49,13 +51,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        signupBtn.setOnClickListener(new View.OnClickListener() {
+        tvSignup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final String username = usernameInput.getText().toString();
-                final String password = passwordInput.getText().toString();
-
-                signup(username, password);
+                final Intent register = new Intent(MainActivity.this, RegisterActivity.class);
+                startActivity(register);
+                finish();
             }
         });
     }
@@ -73,32 +74,6 @@ public class MainActivity extends AppCompatActivity {
                     finish();
                 } else {
                     Log.e("LoginActivity", "Login failure");
-                    e.printStackTrace();
-                }
-            }
-        });
-    }
-
-    private void signup(String username, String password) {
-        // Create the ParseUser
-        ParseUser user = new ParseUser();
-        // Set core properties
-        user.setUsername(username);
-        user.setPassword(password);
-        // Invoke signUpInBackground
-        user.signUpInBackground(new SignUpCallback() {
-            public void done(ParseException e) {
-                if (e == null) {
-                    // Hooray! Let them use the app now.
-                    Log.d("SignupActivity", "Signup successful!");
-                    // create intent to launch home activity after signing up successfully
-                    final Intent home = new Intent(MainActivity.this, HomeActivity.class);
-                    startActivity(home);
-                    finish();
-                } else {
-                    // Sign up didn't succeed. Look at the ParseException
-                    // to figure out what went wrong
-                    Log.e("SignupActivity", "Signup failure");
                     e.printStackTrace();
                 }
             }
