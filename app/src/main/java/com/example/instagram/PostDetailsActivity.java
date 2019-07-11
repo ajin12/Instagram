@@ -41,6 +41,7 @@ public class PostDetailsActivity extends AppCompatActivity {
     TextView tvNumberLikes;
     TextView tvDescription;
     TextView tvTimestamp;
+    TextView tvComments;
 
     // context for rendering
     Context context;
@@ -60,6 +61,7 @@ public class PostDetailsActivity extends AppCompatActivity {
         tvNumberLikes = (TextView) findViewById(R.id.tvNumberLikes);
         tvDescription = (TextView) findViewById(R.id.tvDescription);
         tvTimestamp = (TextView) findViewById(R.id.tvTimestamp);
+        tvComments = (TextView) findViewById(R.id.tvComments);
 
         String objectId = getIntent().getStringExtra("id");
 //        post = Parcels.unwrap(getIntent().getParcelableExtra(Post.class.getSimpleName()));
@@ -97,7 +99,6 @@ public class PostDetailsActivity extends AppCompatActivity {
 
         // set number of likes
         likers = (ArrayList<String>) post.get("likes");
-        // TODO - initialize like arraylist upon create new post
         int numLikes;
         if (likers == null) {
             likers = new ArrayList<>();
@@ -157,6 +158,20 @@ public class PostDetailsActivity extends AppCompatActivity {
                 });
             }
         });
+
+        // get and display comments
+        ArrayList<String> comments = (ArrayList<String>) post.get("comments");
+        if (comments == null) {
+            comments = new ArrayList<>();
+            post.put("comments", comments);
+            tvComments.setText("");
+        } else {
+            String text = "";
+            for (int i = 0; i < comments.size(); i++) {
+                text = text + comments.get(i) + "\n";
+            }
+            tvComments.setText(text);
+        }
 
         tvDescription.setText(post.getDescription());
 
