@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import com.example.instagram.fragments.ComposeFragment;
 import com.example.instagram.fragments.PostsFragment;
+import com.example.instagram.fragments.ProfileFragment;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -44,7 +45,7 @@ public class HomeActivity extends AppCompatActivity {
                     case R.id.action_profile:
                     default:
                         // TODO - swap fragment here
-                        fragment = new ComposeFragment();
+                        fragment = new ProfileFragment();
                         Toast.makeText(HomeActivity.this, "Profile!", Toast.LENGTH_SHORT).show();
                         break;
                 }

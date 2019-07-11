@@ -20,6 +20,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.example.instagram.MainActivity;
 import com.example.instagram.R;
 import com.example.instagram.model.Post;
 import com.parse.FindCallback;
@@ -107,16 +108,16 @@ public class ComposeFragment extends Fragment {
         });
 
         // TODO - move
-//        btnLogout.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                ParseUser.logOut();
-//                // bring up log in page
-//                final Intent login = new Intent(getContext(), MainActivity.class);
-//                startActivity(login);
+        btnLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ParseUser.logOut();
+                // bring up log in page
+                final Intent login = new Intent(getContext(), MainActivity.class);
+                startActivity(login);
 //                finish();
-//            }
-//        });
+            }
+        });
 
         createButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -272,6 +273,7 @@ public class ComposeFragment extends Fragment {
         });
     }
 
+    // TODO - fix
     private void loadTopPosts() {
         final Post.Query postsQuery = new Post.Query();
         postsQuery.getTop().withUser();

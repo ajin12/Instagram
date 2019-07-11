@@ -24,9 +24,9 @@ import java.util.List;
 
 public class PostsFragment extends Fragment {
 
-    private RecyclerView rvPost;
-    private PostAdapter adapter;
-    private List<Post> mPosts;
+    protected RecyclerView rvPost;
+    protected PostAdapter adapter;
+    protected List<Post> mPosts;
     // Keep track of initial load to scroll to the bottom of the ListView
     boolean mFirstLoad;
 
@@ -76,7 +76,7 @@ public class PostsFragment extends Fragment {
         loadTopPosts();
     }
 
-    private void loadTopPosts() {
+    protected void loadTopPosts() {
         final ParseQuery<Post> postsQuery = new ParseQuery<>(Post.class);
         // Configure limit and sort order
         postsQuery.setLimit(MAX_POSTS_TO_SHOW);
