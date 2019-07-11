@@ -72,8 +72,24 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
             }
             }
         });
-//        Bitmap image = BitmapFactory.decodeFile(post.getImage().getUrl());
-//        holder.ivPhoto.setImageBitmap(image);
+
+        // get user's profile photo
+        ParseFile profilePhoto = (ParseFile) post.getUser().get("profilePhoto");
+        if (profilePhoto != null) {
+            profilePhoto.getDataInBackground(new GetDataCallback() {
+                @Override
+                public void done(byte[] data, ParseException e) {
+                    if (e == null) {
+                        // Decode the Byte[] into Bitmap
+                        Bitmap bmp = BitmapFactory.decodeByteArray(data, 0, data.length);
+                        // Set the Bitmap into the ImageView
+                        holder.ivProfileImage.setImageBitmap(bmp);
+                    } else {
+                        Log.d("test", "Problem loading image");
+                    }
+                }
+            });
+        }
 
         holder.tvTimestamp.setText(formatDate(post.getCreatedAt()));
     }
@@ -129,6 +145,28 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
                     detailPost.putExtra("id", post.getObjectId());
                     v.getContext().startActivity(detailPost);
                 }
+                }
+            });
+
+            tvUsername.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+//                    Fragment fragment = new UserDetailFragment();
+//                    FragmentManager fragmentManager = v.getContext().getSupportFragmentManager();
+//                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+//                    Bundle bundle = new Bundle();
+//                    bundle.putString("name", "From Adapter");
+//                    fragment.setArguments(bundle);
+//                    fragmentTransaction.replace(R.id.content_frame, fragment);
+//                    fragmentTransaction.addToBackStack(null);
+//                    fragmentTransaction.commit();
+                }
+            });
+
+            ivPhoto.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
                 }
             });
         }

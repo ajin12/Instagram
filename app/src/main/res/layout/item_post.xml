@@ -13,7 +13,7 @@
         android:layout_height="40dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@android:color/black" />
+        app:srcCompat="@drawable/instagram_user_outline_24" />
 
     <TextView
         android:id="@+id/tvUsername"

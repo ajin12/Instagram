@@ -97,8 +97,24 @@ public class PostDetailsActivity extends AppCompatActivity {
         String date = formatDate(post.getCreatedAt());
         tvTimestamp.setText(date);
 
-
-        // TODO - set profile picture
+        // display profile picture
+        // get user's profile photo
+        ParseFile profilePhoto = (ParseFile) post.getUser().get("profilePhoto");
+        if (profilePhoto != null) {
+            profilePhoto.getDataInBackground(new GetDataCallback() {
+                @Override
+                public void done(byte[] data, ParseException e) {
+                    if (e == null) {
+                        // Decode the Byte[] into Bitmap
+                        Bitmap bmp = BitmapFactory.decodeByteArray(data, 0, data.length);
+                        // Set the Bitmap into the ImageView
+                        ivProfileImage.setImageBitmap(bmp);
+                    } else {
+                        Log.d("test", "Problem loading image");
+                    }
+                }
+            });
+        }
     }
 
     private String formatDate(Date date) {
