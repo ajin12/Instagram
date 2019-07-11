@@ -21,7 +21,6 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.example.instagram.MainActivity;
 import com.example.instagram.R;
 import com.example.instagram.model.Post;
 import com.parse.FindCallback;
@@ -44,9 +43,6 @@ public class ComposeFragment extends Fragment {
     private Button btnCaptureImage;
     private ImageView ivPreview;
     private Button btnLibrary;
-
-    // TODO - move
-    private Button btnLogout;
 
     // Instance of the progress action-view
     ProgressBar miActionProgressItem;
@@ -74,9 +70,6 @@ public class ComposeFragment extends Fragment {
         ivPreview = view.findViewById(R.id.ivPreview);
         btnLibrary = view.findViewById(R.id.btnLibrary);
         miActionProgressItem = view.findViewById(R.id.pbProgressAction);
-
-        // TODO - move
-        btnLogout = view.findViewById(R.id.btnLogout);
 
         btnCaptureImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -109,18 +102,6 @@ public class ComposeFragment extends Fragment {
                     // Bring up gallery to select a photo
                     startActivityForResult(gallery, PICK_PHOTO_CODE);
                 }
-            }
-        });
-
-        // TODO - move
-        btnLogout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ParseUser.logOut();
-                // bring up log in page
-                final Intent login = new Intent(getContext(), MainActivity.class);
-                startActivity(login);
-//                finish();
             }
         });
 
