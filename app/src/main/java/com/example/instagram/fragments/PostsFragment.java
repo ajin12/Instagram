@@ -19,6 +19,7 @@ import com.example.instagram.model.Post;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
+import com.parse.ParseUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +36,8 @@ public class PostsFragment extends Fragment {
 
     static final int MAX_POSTS_TO_SHOW = 20;
     private SwipeRefreshLayout swipeContainer;
+
+    public ParseUser profileToFilter = null;
 
     // onCreateView to inflate the view
     @Nullable
@@ -66,7 +69,7 @@ public class PostsFragment extends Fragment {
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
                 // Triggered only when new data needs to be appended to the list
                 // Add whatever code is needed to append new items to the bottom of the list
-                loadTopPosts();
+                loadTopPosts(page);
             }
         };
         // Adds the scroll listener to RecyclerView
@@ -80,7 +83,7 @@ public class PostsFragment extends Fragment {
             public void onRefresh() {
                 // Refresh list
                 clear();
-                loadTopPosts();
+                loadTopPosts(0);
                 addAll(mPosts);
                 swipeContainer.setRefreshing(false);
             }
@@ -91,14 +94,22 @@ public class PostsFragment extends Fragment {
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
 
-        loadTopPosts();
+        loadTopPosts(0);
     }
 
-    protected void loadTopPosts() {
+    protected void loadTopPosts(int page) {
         final ParseQuery<Post> postsQuery = new ParseQuery<>(Post.class);
         // Configure limit and sort order
         postsQuery.setLimit(MAX_POSTS_TO_SHOW);
+        postsQuery.setSkip(MAX_POSTS_TO_SHOW * page);
         postsQuery.include(Post.KEY_USER);
+
+        if(profileToFilter == null) {
+
+        } else {
+            postsQuery.whereEqualTo(Post.KEY_USER, profileToFilter);
+        }
+
 //        postsQuery.getTop().withUser();
 
         // get the latest 20 posts, order will show up newest to oldest of this group
