@@ -20,7 +20,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.example.instagram.FeedActivity;
 import com.example.instagram.R;
 import com.example.instagram.model.Post;
 import com.parse.FindCallback;
@@ -47,7 +46,6 @@ public class ComposeFragment extends Fragment {
 
     // TODO - move
     private Button btnLogout;
-    private Button btnHome;
 
     public final String APP_TAG = "ComposeFragment";
     public final static int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 1034;
@@ -75,8 +73,6 @@ public class ComposeFragment extends Fragment {
 
         // TODO - move
         btnLogout = view.findViewById(R.id.btnLogout);
-        btnHome = view.findViewById(R.id.btnFeed);
-
 
         btnCaptureImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -130,16 +126,6 @@ public class ComposeFragment extends Fragment {
 //                finish();
 //            }
 //        });
-
-        // TODO - should be for onLoginSuccess()
-        // Bring user to home feed
-        btnHome.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent home = new Intent(v.getContext(), FeedActivity.class);
-                startActivity(home);
-            }
-        });
 
         createButton.setOnClickListener(new View.OnClickListener() {
             @Override
