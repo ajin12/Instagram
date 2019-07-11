@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -26,6 +27,11 @@ public class PostsFragment extends Fragment {
     private RecyclerView rvPost;
     private PostAdapter adapter;
     private List<Post> mPosts;
+    // Keep track of initial load to scroll to the bottom of the ListView
+    boolean mFirstLoad;
+
+    static final int MAX_POSTS_TO_SHOW = 20;
+    private SwipeRefreshLayout swipeContainer;
 
     // onCreateView to inflate the view
     @Nullable
@@ -40,6 +46,7 @@ public class PostsFragment extends Fragment {
 
         // create the data source
         mPosts = new ArrayList<>();
+        mFirstLoad = true;
         // create the adapter
         adapter = new PostAdapter(getContext(), mPosts);
         // set the adapter on the recycler view
@@ -47,14 +54,37 @@ public class PostsFragment extends Fragment {
         // set the layout manager on the recycler view
         rvPost.setLayoutManager(new LinearLayoutManager(getContext()));
 
+        // Lookup the swipe container view
+        swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeContainer);
+        // Setup refresh listener which triggers new data loading
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // Refresh list
+                clear();
+                loadTopPosts();
+                addAll(mPosts);
+                swipeContainer.setRefreshing(false);
+            }
+        });
+        // Configure the refreshing colors
+        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
+
         loadTopPosts();
     }
 
     private void loadTopPosts() {
         final ParseQuery<Post> postsQuery = new ParseQuery<>(Post.class);
+        // Configure limit and sort order
+        postsQuery.setLimit(MAX_POSTS_TO_SHOW);
         postsQuery.include(Post.KEY_USER);
 //        postsQuery.getTop().withUser();
 
+        // get the latest 20 posts, order will show up newest to oldest of this group
+        postsQuery.orderByDescending("createdAt");
         // get all posts in a background thread
         postsQuery.findInBackground(new FindCallback<Post>() {
             @Override
@@ -62,6 +92,11 @@ public class PostsFragment extends Fragment {
                 if (e == null) {
                     mPosts.addAll(objects);
                     adapter.notifyDataSetChanged();
+                    // Scroll to the bottom of the list on initial load
+                    if (mFirstLoad) {
+                        rvPost.scrollToPosition(0);
+                        mFirstLoad = false;
+                    }
 
                     for (int i = 0; i < objects.size(); ++i) {
                         Log.d("HomeActivity", "Post[" + i + "] = "
@@ -73,5 +108,17 @@ public class PostsFragment extends Fragment {
                 }
             }
         });
+    }
+
+    // Clean all elements of the recycler
+    public void clear() {
+        mPosts.clear();
+        adapter.notifyDataSetChanged();
+    }
+
+    // Add a list of items -- change to type used
+    public void addAll(List<Post> list) {
+        mPosts.addAll(list);
+        adapter.notifyDataSetChanged();
     }
 }
