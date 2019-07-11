@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -15,14 +16,19 @@ import com.parse.GetDataCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseQuery;
+import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 public class PostDetailsActivity extends AppCompatActivity {
 
     // the post to display
     Post post;
+    // list of likers
+    ArrayList<String> likers;
 
     // the view objects
     ImageView ivProfileImage;
@@ -89,7 +95,68 @@ public class PostDetailsActivity extends AppCompatActivity {
             }
         });
 
-        // TODO - number of likes
+        // set number of likes
+        likers = (ArrayList<String>) post.get("likes");
+        // TODO - initialize like arraylist upon create new post
+        int numLikes;
+        if (likers == null) {
+            likers = new ArrayList<>();
+            post.put("likes", likers);
+            numLikes = 0;
+        } else {
+            numLikes = likers.size();
+        }
+
+        setNumberLikesText(numLikes);
+
+        // set heart button depending on whether tweet is already liked
+        boolean userLiked = likers.contains(ParseUser.getCurrentUser().getObjectId());
+        if (userLiked) {
+            ibLike.setImageResource(R.drawable.ufi_heart_active);
+        } else {
+            ibLike.setImageResource(R.drawable.ufi_heart);
+        }
+
+        ibLike.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                likers = (ArrayList<String>) post.get("likes");
+                int numLikes;
+                if (likers == null) {
+                    post.put("likes", new ArrayList<>());
+                    numLikes = 0;
+                } else {
+                    numLikes = likers.size();
+                }
+                // check if user already liked post
+                String currentUser = ParseUser.getCurrentUser().getObjectId();
+                if (!likers.contains(currentUser)) {
+                    likers.add(ParseUser.getCurrentUser().getObjectId());
+                    post.put("likes", likers);
+                    // reset text
+                    setNumberLikesText(numLikes + 1);
+                    ibLike.setImageResource(R.drawable.ufi_heart_active);
+                } else {
+                    likers.remove(ParseUser.getCurrentUser().getObjectId());
+                    post.put("likes", likers);
+                    // reset text
+                    setNumberLikesText(numLikes - 1);
+                    ibLike.setImageResource(R.drawable.ufi_heart);
+                }
+
+                // save this new post in a background thread
+                post.saveInBackground(new SaveCallback() {
+                    @Override
+                    public void done(ParseException e) {
+                    if (e == null) {
+                        Log.d("PostDetailsActivity", "Like success!");
+                    } else {
+                        e.printStackTrace();
+                    }
+                    }
+                });
+            }
+        });
 
         tvDescription.setText(post.getDescription());
 
@@ -121,5 +188,15 @@ public class PostDetailsActivity extends AppCompatActivity {
         SimpleDateFormat formatter = new SimpleDateFormat("dd MMM yyyy HH:mm");
         String strDate = formatter.format(date);
         return strDate;
+    }
+
+    private void setNumberLikesText(int numLikes) {
+        if (numLikes == 0) {
+            tvNumberLikes.setText("");
+        } else if (numLikes == 1) {
+            tvNumberLikes.setText(numLikes + " like");
+        } else {
+            tvNumberLikes.setText(numLikes + " likes");
+        }
     }
 }

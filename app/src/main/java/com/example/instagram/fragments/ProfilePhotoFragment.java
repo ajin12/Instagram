@@ -54,7 +54,7 @@ public class ProfilePhotoFragment extends ComposeFragment {
         miActionProgressItem.bringToFront();
         miActionProgressItem.setVisibility(View.VISIBLE);
 
-        // TODO - set profile photo
+        // set profile photo
         user.put("profilePhoto", imageFile);
 //        newPost.setImage(imageFile);
 //        newPost.setUser(user);
