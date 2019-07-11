@@ -39,7 +39,6 @@ public class ComposeFragment extends Fragment {
 
     private EditText descriptionInput;
     private Button createButton;
-    private Button refreshButton;
     private Button btnCaptureImage;
     private ImageView ivPreview;
     private Button btnLibrary;
@@ -66,7 +65,6 @@ public class ComposeFragment extends Fragment {
         // find views
         descriptionInput = view.findViewById(R.id.etDescription);
         createButton = view.findViewById(R.id.btnCreate);
-        refreshButton = view.findViewById(R.id.btnRefresh);
         btnCaptureImage = view.findViewById(R.id.btnCaptureImage);
         ivPreview = view.findViewById(R.id.ivPreview);
         btnLibrary = view.findViewById(R.id.btnLibrary);
@@ -105,13 +103,6 @@ public class ComposeFragment extends Fragment {
                     // Bring up gallery to select a photo
                     startActivityForResult(gallery, PICK_PHOTO_CODE);
                 }
-            }
-        });
-
-        refreshButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                loadTopPosts();
             }
         });
 
