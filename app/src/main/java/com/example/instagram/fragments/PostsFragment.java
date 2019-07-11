@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.instagram.EndlessRecyclerViewScrollListener;
 import com.example.instagram.PostAdapter;
 import com.example.instagram.R;
 import com.example.instagram.model.Post;
@@ -29,6 +30,8 @@ public class PostsFragment extends Fragment {
     protected List<Post> mPosts;
     // Keep track of initial load to scroll to the bottom of the ListView
     boolean mFirstLoad;
+    // Store a member variable for the listener
+    private EndlessRecyclerViewScrollListener scrollListener;
 
     static final int MAX_POSTS_TO_SHOW = 20;
     private SwipeRefreshLayout swipeContainer;
@@ -51,8 +54,23 @@ public class PostsFragment extends Fragment {
         adapter = new PostAdapter(getContext(), mPosts);
         // set the adapter on the recycler view
         rvPost.setAdapter(adapter);
-        // set the layout manager on the recycler view
-        rvPost.setLayoutManager(new LinearLayoutManager(getContext()));
+        // associate the LayoutManager with the RecyclerView
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(view.getContext());
+
+        // RecyclerView setup (layout manager, use adapter)
+        rvPost.setLayoutManager(linearLayoutManager);
+
+        // Retain an instance so that you can call `resetState()` for fresh searches
+        scrollListener = new EndlessRecyclerViewScrollListener(linearLayoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                // Triggered only when new data needs to be appended to the list
+                // Add whatever code is needed to append new items to the bottom of the list
+                loadTopPosts();
+            }
+        };
+        // Adds the scroll listener to RecyclerView
+        rvPost.addOnScrollListener(scrollListener);
 
         // Lookup the swipe container view
         swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeContainer);
