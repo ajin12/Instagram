@@ -26,6 +26,10 @@ public class FeedActivity extends AppCompatActivity {
     static final int MAX_POSTS_TO_SHOW = 20;
     private SwipeRefreshLayout swipeContainer;
 
+    // Store a member variable for the listener
+    private EndlessRecyclerViewScrollListener scrollListener;
+    String maxId = "";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +53,28 @@ public class FeedActivity extends AppCompatActivity {
         // set the adapter
         rvPost.setAdapter(mAdapter);
 
+        // Retain an instance so that you can call `resetState()` for fresh searches
+        scrollListener = new EndlessRecyclerViewScrollListener(linearLayoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                // Triggered only when new data needs to be appended to the list
+                // Add whatever code is needed to append new items to the bottom of the list
+//                mPosts.add(mPosts.get(0));
+//                mAdapter.notifyDataSetChanged();
+//                populateFeed(maxId);
+
+
+
+//                maxId = mPosts.get(mPosts.size()-1).getObjectId();
+//                for (int i = 0; i < MAX_POSTS_TO_SHOW; i++) {
+//                    mPosts.add(mPosts.get(maxId+i));
+//                }
+//                loadNextDataFromApi(page);
+            }
+        };
+        // Adds the scroll listener to RecyclerView
+        rvPost.addOnScrollListener(scrollListener);
+
         // Lookup the swipe container view
         swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
         // Setup refresh listener which triggers new data loading
@@ -57,7 +83,7 @@ public class FeedActivity extends AppCompatActivity {
             public void onRefresh() {
                 // Refresh list
                 clear();
-                populateFeed();
+                populateFeed(maxId);
                 addAll(mPosts);
                 swipeContainer.setRefreshing(false);
             }
@@ -68,12 +94,24 @@ public class FeedActivity extends AppCompatActivity {
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
 
-        populateFeed();
+        populateFeed(maxId);
+    }
+
+    // Append the next page of data into the adapter
+    // This method probably sends out a network request and appends new data items to your adapter.
+    public void loadNextDataFromApi(int offset) {
+        maxId = mPosts.get(mPosts.size()-1).getObjectId();
+        populateFeed(maxId);
+        // Send an API request to retrieve appropriate paginated data
+        //  --> Send the request including an offset value (i.e `page`) as a query parameter.
+        //  --> Deserialize and construct new model objects from the API response
+        //  --> Append the new data objects to the existing set of items inside the array of items
+        //  --> Notify the adapter of the new items made with `notifyItemRangeInserted()`
     }
 
 
     // Query posts from Parse so we can load them into the post adapter
-    void populateFeed() {
+    void populateFeed(String maxId) {
         // Construct query to execute
         ParseQuery<Post> query = ParseQuery.getQuery(Post.class);
         // Configure limit and sort order
