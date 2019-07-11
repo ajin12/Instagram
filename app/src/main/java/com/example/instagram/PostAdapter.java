@@ -48,7 +48,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
         // populate the views
         // TODO - profile image
         // TODO - number of likes
-        // TODO - date of post
         String username = "";
         try {
             username = post.getUser().fetchIfNeeded().getString("username");
