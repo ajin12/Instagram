@@ -3,6 +3,7 @@ package com.example.instagram;
 import android.app.Application;
 
 import com.example.instagram.model.Post;
+import com.example.instagram.model.User;
 import com.parse.Parse;
 import com.parse.ParseObject;
 
@@ -17,6 +18,8 @@ public class ParseApp extends Application {
 
         // tell parse that the post model is a custom parse model
         ParseObject.registerSubclass(Post.class);
+        // tell parse that the user model is a custom parse model
+        ParseObject.registerSubclass(User.class);
 
         // TODO - necessary?
         // Use for monitoring Parse OkHttp traffic

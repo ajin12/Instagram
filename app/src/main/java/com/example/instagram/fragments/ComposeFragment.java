@@ -38,11 +38,11 @@ import static android.app.Activity.RESULT_OK;
 
 public class ComposeFragment extends Fragment {
 
-    private EditText descriptionInput;
+    protected EditText descriptionInput;
     private Button createButton;
-    private Button btnCaptureImage;
-    private ImageView ivPreview;
-    private Button btnLibrary;
+    protected Button btnCaptureImage;
+    protected ImageView ivPreview;
+    protected Button btnLibrary;
 
     // Instance of the progress action-view
     ProgressBar miActionProgressItem;
@@ -65,7 +65,7 @@ public class ComposeFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         // find views
         descriptionInput = view.findViewById(R.id.etDescription);
-        createButton = view.findViewById(R.id.btnCreate);
+        createButton = view.findViewById(R.id.btnProfilePhoto);
         btnCaptureImage = view.findViewById(R.id.btnCaptureImage);
         ivPreview = view.findViewById(R.id.ivPreview);
         btnLibrary = view.findViewById(R.id.btnLibrary);

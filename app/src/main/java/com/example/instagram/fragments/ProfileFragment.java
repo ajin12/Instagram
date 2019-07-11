@@ -75,6 +75,17 @@ public class ProfileFragment extends PostsFragment {
 //                finish();
             }
         });
+
+        ivProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ProfilePhotoFragment nextFrag = new ProfilePhotoFragment();
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(((ViewGroup) getView().getParent()).getId(), nextFrag, "findThisFragment")
+                        .addToBackStack(null)
+                        .commit();
+            }
+        });
     }
 
     @Override
