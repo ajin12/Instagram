@@ -4,7 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,10 +30,12 @@ import java.util.List;
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
     private List<Post> mPosts;
     private Context mContext;
+    public int whichFragment;
 
-    public PostAdapter(Context context, List<Post> posts) {
+    public PostAdapter(Context context, List<Post> posts, int whichFragment) {
         mPosts = posts;
         mContext = context;
+        whichFragment = whichFragment;
     }
 
     @Override
@@ -47,75 +51,105 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         Post post = mPosts.get(position);
-
-        // populate the views
-        // TODO - profile image
-
-        // set number of likes
-        ArrayList<String> likers = (ArrayList<String>) post.get("likes");
-        int numLikes;
-        if (likers == null) {
-            likers = new ArrayList<>();
-            post.put("likes", likers);
-            numLikes = 0;
-        } else {
-            numLikes = likers.size();
-        }
-
-        holder.tvNumberLikes.setText(setNumberLikesText(numLikes));
-
-        // set heart button depending on whether tweet is already liked
-        boolean userLiked = likers.contains(ParseUser.getCurrentUser().getObjectId());
-        if (userLiked) {
-            holder.ibLike.setImageResource(R.drawable.ufi_heart_active);
-        } else {
-            holder.ibLike.setImageResource(R.drawable.ufi_heart);
-        }
-
-        String username = "";
-        try {
-            username = post.getUser().fetchIfNeeded().getString("username");
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        holder.tvUsername.setText(username);
-        holder.tvDescription.setText(post.getDescription());
-        // https://stackoverflow.com/questions/32901767/load-image-from-parse-to-image-view
-        // https://stackoverflow.com/questions/32529950/convert-parsefile-image-to-byte-in-android
-        ParseFile file = (ParseFile) post.getImage();
-        file.getDataInBackground(new GetDataCallback() {
-            @Override
-            public void done(byte[] data, ParseException e) {
-            if (e == null) {
-                // Decode the Byte[] into Bitmap
-                Bitmap bmp = BitmapFactory.decodeByteArray(data, 0, data.length);
-                // Set the Bitmap into the ImageView
-                holder.ivPhoto.setImageBitmap(bmp);
+        if (whichFragment == 0) {
+            // set number of likes
+            ArrayList<String> likers = (ArrayList<String>) post.get("likes");
+            int numLikes;
+            if (likers == null) {
+                likers = new ArrayList<>();
+                post.put("likes", likers);
+                numLikes = 0;
             } else {
-                Log.d("test", "Problem loading image");
+                numLikes = likers.size();
             }
-            }
-        });
 
-        // get user's profile photo
-        ParseFile profilePhoto = (ParseFile) post.getUser().get("profilePhoto");
-        if (profilePhoto != null) {
-            profilePhoto.getDataInBackground(new GetDataCallback() {
+            holder.tvNumberLikes.setText(setNumberLikesText(numLikes));
+
+            // set heart button depending on whether tweet is already liked
+            boolean userLiked = likers.contains(ParseUser.getCurrentUser().getObjectId());
+            if (userLiked) {
+                holder.ibLike.setImageResource(R.drawable.ufi_heart_active);
+            } else {
+                holder.ibLike.setImageResource(R.drawable.ufi_heart);
+            }
+
+            String username = "";
+            try {
+                username = post.getUser().fetchIfNeeded().getString("username");
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            holder.tvUsername.setText(username);
+            holder.tvDescription.setText(post.getDescription());
+
+            // https://stackoverflow.com/questions/32901767/load-image-from-parse-to-image-view
+            // https://stackoverflow.com/questions/32529950/convert-parsefile-image-to-byte-in-android
+            ParseFile file = (ParseFile) post.getImage();
+            file.getDataInBackground(new GetDataCallback() {
                 @Override
                 public void done(byte[] data, ParseException e) {
                     if (e == null) {
                         // Decode the Byte[] into Bitmap
                         Bitmap bmp = BitmapFactory.decodeByteArray(data, 0, data.length);
                         // Set the Bitmap into the ImageView
-                        holder.ivProfileImage.setImageBitmap(bmp);
+                        holder.ivPhoto.setImageBitmap(bmp);
                     } else {
                         Log.d("test", "Problem loading image");
                     }
                 }
             });
-        }
 
-        holder.tvTimestamp.setText(formatDate(post.getCreatedAt()));
+            // get user's profile photo
+            ParseFile profilePhoto = (ParseFile) post.getUser().get("profilePhoto");
+            if (profilePhoto != null) {
+                profilePhoto.getDataInBackground(new GetDataCallback() {
+                    @Override
+                    public void done(byte[] data, ParseException e) {
+                        if (e == null) {
+                            // Decode the Byte[] into Bitmap
+                            Bitmap bmp = BitmapFactory.decodeByteArray(data, 0, data.length);
+                            // Set the Bitmap into the ImageView
+                            holder.ivProfileImage.setImageBitmap(bmp);
+                        } else {
+                            Log.d("test", "Problem loading image");
+                        }
+                    }
+                });
+            }
+
+            holder.tvTimestamp.setText(formatDate(post.getCreatedAt()));
+        } else {
+            DisplayMetrics displayMetrics = mContext.getResources().getDisplayMetrics();
+            int pxWidth = displayMetrics.widthPixels;
+
+
+            holder.tvUsername.setVisibility(View.GONE);
+            holder.tvTimestamp.setVisibility(View.GONE);
+            holder.tvNumberLikes.setVisibility(View.GONE);
+            holder.ibLike.setVisibility(View.GONE);
+            holder.ibSave.setVisibility(View.GONE);
+            holder.ibDirect.setVisibility(View.GONE);
+            holder.ibComment.setVisibility(View.GONE);
+            holder.tvDescription.setVisibility(View.GONE);
+
+            ParseFile file = (ParseFile) post.getImage();
+            file.getDataInBackground(new GetDataCallback() {
+                @Override
+                public void done(byte[] data, ParseException e) {
+                    if (e == null) {
+                        // Decode the Byte[] into Bitmap
+                        Bitmap bmp = BitmapFactory.decodeByteArray(data, 0, data.length);
+                        // Set the Bitmap into the ImageView
+                        holder.ivPhoto.setImageBitmap(bmp);
+                    } else {
+                        Log.d("test", "Problem loading image");
+                    }
+                }
+            });
+
+            ConstraintLayout.LayoutParams layoutParams = new ConstraintLayout.LayoutParams(pxWidth / 3, pxWidth / 3);
+            holder.ivPhoto.setLayoutParams(layoutParams);
+        }
     }
 
     private String setNumberLikesText(int numLikes) {

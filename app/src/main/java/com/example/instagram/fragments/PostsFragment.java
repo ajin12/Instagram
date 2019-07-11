@@ -38,6 +38,7 @@ public class PostsFragment extends Fragment {
     private SwipeRefreshLayout swipeContainer;
 
     public ParseUser profileToFilter = null;
+    public int whichFragment;
 
     // onCreateView to inflate the view
     @Nullable
@@ -54,14 +55,15 @@ public class PostsFragment extends Fragment {
         mPosts = new ArrayList<>();
         mFirstLoad = true;
         // create the adapter
-        adapter = new PostAdapter(getContext(), mPosts);
-        // set the adapter on the recycler view
-        rvPost.setAdapter(adapter);
+        adapter = new PostAdapter(getContext(), mPosts, whichFragment);
+//        // set the adapter on the recycler view
+//        rvPost.setAdapter(adapter);
         // associate the LayoutManager with the RecyclerView
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(view.getContext());
 
-        // RecyclerView setup (layout manager, use adapter)
-        rvPost.setLayoutManager(linearLayoutManager);
+//        // RecyclerView setup (layout manager, use adapter)
+//        rvPost.setLayoutManager(linearLayoutManager);
+        setRecyclerView();
 
         // Retain an instance so that you can call `resetState()` for fresh searches
         scrollListener = new EndlessRecyclerViewScrollListener(linearLayoutManager) {
@@ -95,6 +97,13 @@ public class PostsFragment extends Fragment {
                 android.R.color.holo_red_light);
 
         loadTopPosts(0);
+    }
+
+    protected void setRecyclerView() {
+        // RecyclerView setup (layout manager, use adapter)
+        whichFragment = 0;
+        rvPost.setAdapter(adapter);
+        rvPost.setLayoutManager(new LinearLayoutManager(getContext()));
     }
 
     protected void loadTopPosts(int page) {

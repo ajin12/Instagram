@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.GridLayoutManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -85,5 +86,11 @@ public class ProfileFragment extends PostsFragment {
         });
     }
 
-
+    @Override
+    protected void setRecyclerView() {
+        // RecyclerView setup (layout manager, use adapter)
+        whichFragment = 1;
+        rvPost.setAdapter(adapter);
+        rvPost.setLayoutManager(new GridLayoutManager(getActivity(), 3));
+    }
 }
