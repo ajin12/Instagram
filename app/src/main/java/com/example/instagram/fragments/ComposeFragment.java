@@ -32,6 +32,7 @@ import com.parse.SaveCallback;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import static android.app.Activity.RESULT_OK;
@@ -245,6 +246,7 @@ public class ComposeFragment extends Fragment {
         newPost.setDescription(description);
         newPost.setImage(imageFile);
         newPost.setUser(user);
+        newPost.put("likes", new ArrayList<>());
 
         // save this new post in a background thread
         newPost.saveInBackground(new SaveCallback() {

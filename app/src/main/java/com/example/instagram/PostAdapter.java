@@ -17,8 +17,11 @@ import com.example.instagram.model.Post;
 import com.parse.GetDataCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
+import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -47,7 +50,28 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
 
         // populate the views
         // TODO - profile image
-        // TODO - number of likes
+
+        // set number of likes
+        ArrayList<String> likers = (ArrayList<String>) post.get("likes");
+        int numLikes;
+        if (likers == null) {
+            likers = new ArrayList<>();
+            post.put("likes", likers);
+            numLikes = 0;
+        } else {
+            numLikes = likers.size();
+        }
+
+        holder.tvNumberLikes.setText(setNumberLikesText(numLikes));
+
+        // set heart button depending on whether tweet is already liked
+        boolean userLiked = likers.contains(ParseUser.getCurrentUser().getObjectId());
+        if (userLiked) {
+            holder.ibLike.setImageResource(R.drawable.ufi_heart_active);
+        } else {
+            holder.ibLike.setImageResource(R.drawable.ufi_heart);
+        }
+
         String username = "";
         try {
             username = post.getUser().fetchIfNeeded().getString("username");
@@ -92,6 +116,16 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
         }
 
         holder.tvTimestamp.setText(formatDate(post.getCreatedAt()));
+    }
+
+    private String setNumberLikesText(int numLikes) {
+        if (numLikes == 0) {
+            return "";
+        } else if (numLikes == 1) {
+            return numLikes + " like";
+        } else {
+            return numLikes + " likes";
+        }
     }
 
     private String formatDate(Date date) {
@@ -163,12 +197,57 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
                 }
             });
 
-            ivPhoto.setOnClickListener(new View.OnClickListener() {
+            ibLike.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    Post post = mPosts.get(getAdapterPosition());
+                    ArrayList<String> likers = (ArrayList<String>) post.get("likes");
+                    int numLikes;
+                    if (likers == null) {
+                        post.put("likes", new ArrayList<>());
+                        numLikes = 0;
+                    } else {
+                        numLikes = likers.size();
+                    }
+                    // check if user already liked post
+                    String currentUser = ParseUser.getCurrentUser().getObjectId();
+                    if (!likers.contains(currentUser)) {
+                        likers.add(ParseUser.getCurrentUser().getObjectId());
+                        post.put("likes", likers);
+                        // reset text
+                        setNumberLikesText(numLikes + 1);
+                        ibLike.setImageResource(R.drawable.ufi_heart_active);
+                    } else {
+                        likers.remove(ParseUser.getCurrentUser().getObjectId());
+                        post.put("likes", likers);
+                        // reset text
+                        setNumberLikesText(numLikes - 1);
+                        ibLike.setImageResource(R.drawable.ufi_heart);
+                    }
 
+                    // save this new post in a background thread
+                    post.saveInBackground(new SaveCallback() {
+                        @Override
+                        public void done(ParseException e) {
+                        if (e == null) {
+                            Log.d("PostDetailsActivity", "Like success!");
+                        } else {
+                            e.printStackTrace();
+                        }
+                        }
+                    });
                 }
             });
+        }
+
+        private void setNumberLikesText(int numLikes) {
+            if (numLikes == 0) {
+                tvNumberLikes.setText("");
+            } else if (numLikes == 1) {
+                tvNumberLikes.setText(numLikes + " like");
+            } else {
+                tvNumberLikes.setText(numLikes + " likes");
+            }
         }
     }
 }
