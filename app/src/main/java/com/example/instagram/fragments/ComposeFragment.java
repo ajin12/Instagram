@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.instagram.MainActivity;
@@ -47,6 +48,9 @@ public class ComposeFragment extends Fragment {
     // TODO - move
     private Button btnLogout;
 
+    // Instance of the progress action-view
+    ProgressBar miActionProgressItem;
+
     public final String APP_TAG = "ComposeFragment";
     public final static int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 1034;
     // PICK_PHOTO_CODE is a constant integer
@@ -69,6 +73,7 @@ public class ComposeFragment extends Fragment {
         btnCaptureImage = view.findViewById(R.id.btnCaptureImage);
         ivPreview = view.findViewById(R.id.ivPreview);
         btnLibrary = view.findViewById(R.id.btnLibrary);
+        miActionProgressItem = view.findViewById(R.id.pbProgressAction);
 
         // TODO - move
         btnLogout = view.findViewById(R.id.btnLogout);
@@ -253,6 +258,8 @@ public class ComposeFragment extends Fragment {
     }
 
     private void createPost(String description, ParseFile imageFile, ParseUser user) {
+        miActionProgressItem.bringToFront();
+        miActionProgressItem.setVisibility(View.VISIBLE);
         final Post newPost = new Post();
         newPost.setDescription(description);
         newPost.setImage(imageFile);
@@ -271,6 +278,7 @@ public class ComposeFragment extends Fragment {
                 }
             }
         });
+        miActionProgressItem.setVisibility(View.INVISIBLE);
     }
 
     // TODO - fix

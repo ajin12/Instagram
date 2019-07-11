@@ -15,8 +15,6 @@ import com.example.instagram.fragments.ProfileFragment;
 
 public class HomeActivity extends AppCompatActivity {
 
-//    private static final String imagePath = "~/Users/ayjin/Desktop/screenshot.png";
-
     private BottomNavigationView bottomNavigationView;
 
     @Override
