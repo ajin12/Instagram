@@ -184,8 +184,35 @@ public class PostDetailsActivity extends AppCompatActivity {
         btnComment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                final String comment = v.getContext().etComment.getText.toString();
+                final String comment = etComment.getText().toString();
 
+                ArrayList<String> comments = (ArrayList<String>) post.get("comments");
+                if (comments == null) {
+                    post.put("comments", new ArrayList<>());
+                }
+                String username = ParseUser.getCurrentUser().getUsername();
+                comments.add(username + ": " + comment);
+                post.put("comments", comments);
+                // reset text
+                String text = "";
+                for (int i = 0; i < comments.size() - 1; i++) {
+                    text = text + comments.get(i) + "\n";
+                }
+                text = text + comments.get(comments.size() - 1);
+                tvComments.setText(text);
+
+                etComment.setText("");
+                // save this new post in a background thread
+                post.saveInBackground(new SaveCallback() {
+                    @Override
+                    public void done(ParseException e) {
+                        if (e == null) {
+                            Log.d("PostDetailsActivity", "Comment success!");
+                        } else {
+                            e.printStackTrace();
+                        }
+                    }
+                });
             }
         });
 
