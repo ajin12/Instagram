@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
+public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
     private List<Post> mPosts;
     private Context mContext;
     public int whichFragment;
@@ -35,7 +35,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
     public PostAdapter(Context context, List<Post> posts, int whichFragment) {
         mPosts = posts;
         mContext = context;
-        whichFragment = whichFragment;
+        this.whichFragment = whichFragment;
     }
 
     @Override
@@ -202,17 +202,17 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                // get item position
-                int position = getAdapterPosition();
-                // make sure the position is valid, i.e. actually exists in the view
-                if (position != RecyclerView.NO_POSITION) {
-                    // get the post at this position
-                    Post post = mPosts.get(position);
-                    // open detail view of tweet
-                    Intent detailPost= new Intent(v.getContext(), PostDetailsActivity.class);
-                    detailPost.putExtra("id", post.getObjectId());
-                    v.getContext().startActivity(detailPost);
-                }
+                    // get item position
+                    int position = getAdapterPosition();
+                    // make sure the position is valid, i.e. actually exists in the view
+                    if (position != RecyclerView.NO_POSITION) {
+                        // get the post at this position
+                        Post post = mPosts.get(position);
+                        // open detail view of tweet
+                        Intent detailPost = new Intent(v.getContext(), PostDetailsActivity.class);
+                        detailPost.putExtra("id", post.getObjectId());
+                        v.getContext().startActivity(detailPost);
+                    }
                 }
             });
 
@@ -263,11 +263,11 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
                     post.saveInBackground(new SaveCallback() {
                         @Override
                         public void done(ParseException e) {
-                        if (e == null) {
-                            Log.d("PostDetailsActivity", "Like success!");
-                        } else {
-                            e.printStackTrace();
-                        }
+                            if (e == null) {
+                                Log.d("PostDetailsActivity", "Like success!");
+                            } else {
+                                e.printStackTrace();
+                            }
                         }
                     });
                 }

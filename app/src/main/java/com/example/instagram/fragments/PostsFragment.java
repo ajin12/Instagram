@@ -55,7 +55,7 @@ public class PostsFragment extends Fragment {
         mPosts = new ArrayList<>();
         mFirstLoad = true;
         // create the adapter
-        adapter = new PostAdapter(getContext(), mPosts, whichFragment);
+
 //        // set the adapter on the recycler view
 //        rvPost.setAdapter(adapter);
         // associate the LayoutManager with the RecyclerView
@@ -102,6 +102,7 @@ public class PostsFragment extends Fragment {
     protected void setRecyclerView() {
         // RecyclerView setup (layout manager, use adapter)
         whichFragment = 0;
+        adapter = new PostAdapter(getContext(), mPosts, whichFragment);
         rvPost.setAdapter(adapter);
         rvPost.setLayoutManager(new LinearLayoutManager(getContext()));
     }

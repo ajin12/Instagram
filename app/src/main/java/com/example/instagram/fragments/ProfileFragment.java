@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.instagram.MainActivity;
+import com.example.instagram.PostAdapter;
 import com.example.instagram.R;
 import com.parse.GetDataCallback;
 import com.parse.ParseException;
@@ -62,6 +63,8 @@ public class ProfileFragment extends PostsFragment {
             });
         }
 
+        setRecyclerView();
+
         btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -90,6 +93,7 @@ public class ProfileFragment extends PostsFragment {
     protected void setRecyclerView() {
         // RecyclerView setup (layout manager, use adapter)
         whichFragment = 1;
+        adapter = new PostAdapter(getContext(), mPosts, whichFragment);
         rvPost.setAdapter(adapter);
         rvPost.setLayoutManager(new GridLayoutManager(getActivity(), 3));
     }

@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -42,6 +44,8 @@ public class PostDetailsActivity extends AppCompatActivity {
     TextView tvDescription;
     TextView tvTimestamp;
     TextView tvComments;
+    EditText etComment;
+    Button btnComment;
 
     // context for rendering
     Context context;
@@ -62,6 +66,8 @@ public class PostDetailsActivity extends AppCompatActivity {
         tvDescription = (TextView) findViewById(R.id.tvDescription);
         tvTimestamp = (TextView) findViewById(R.id.tvTimestamp);
         tvComments = (TextView) findViewById(R.id.tvComments);
+        etComment = (EditText) findViewById(R.id.etComment);
+        btnComment = (Button) findViewById(R.id.btnComment);
 
         String objectId = getIntent().getStringExtra("id");
 //        post = Parcels.unwrap(getIntent().getParcelableExtra(Post.class.getSimpleName()));
@@ -167,11 +173,21 @@ public class PostDetailsActivity extends AppCompatActivity {
             tvComments.setText("");
         } else {
             String text = "";
-            for (int i = 0; i < comments.size(); i++) {
+            for (int i = 0; i < comments.size()-1; i++) {
                 text = text + comments.get(i) + "\n";
             }
+            text = text + comments.get(comments.size()-1);
             tvComments.setText(text);
         }
+
+        // comment on a post
+        btnComment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                final String comment = v.getContext().etComment.getText.toString();
+
+            }
+        });
 
         tvDescription.setText(post.getDescription());
 
