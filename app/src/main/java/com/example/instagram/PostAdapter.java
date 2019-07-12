@@ -216,21 +216,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
                 }
             });
 
-            tvUsername.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-//                    Fragment fragment = new UserDetailFragment();
-//                    FragmentManager fragmentManager = v.getContext().getSupportFragmentManager();
-//                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-//                    Bundle bundle = new Bundle();
-//                    bundle.putString("name", "From Adapter");
-//                    fragment.setArguments(bundle);
-//                    fragmentTransaction.replace(R.id.content_frame, fragment);
-//                    fragmentTransaction.addToBackStack(null);
-//                    fragmentTransaction.commit();
-                }
-            });
-
             ibLike.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

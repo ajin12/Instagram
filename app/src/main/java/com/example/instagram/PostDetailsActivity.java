@@ -222,6 +222,17 @@ public class PostDetailsActivity extends AppCompatActivity {
         String date = formatDate(post.getCreatedAt());
         tvTimestamp.setText(date);
 
+//        tvUsername.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                ProfileFragment nextFrag = new ProfileFragment();
+//                PostDetailsActivity.this.getSupportFragmentManager().beginTransaction()
+//                        .replace(((ViewGroup) v.getParent()).getId(), nextFrag, "findThisFragment")
+//                        .addToBackStack(null)
+//                        .commit();
+//            }
+//        });
+
         // display profile picture
         // get user's profile photo
         ParseFile profilePhoto = (ParseFile) post.getUser().get("profilePhoto");
