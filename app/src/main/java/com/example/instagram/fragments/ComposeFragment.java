@@ -23,7 +23,6 @@ import android.widget.Toast;
 
 import com.example.instagram.R;
 import com.example.instagram.model.Post;
-import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseUser;
@@ -33,7 +32,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -80,7 +78,6 @@ public class ComposeFragment extends Fragment {
         });
 
         // Trigger gallery selection for a photo
-        // TODO - not saving selected image from library correctly
         btnLibrary.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -95,7 +92,6 @@ public class ComposeFragment extends Fragment {
                 // See https://guides.codepath.com/android/Sharing-Content-with-Intents#sharing-files-with-api-24-or-higher
                 Uri fileProvider = FileProvider.getUriForFile(v.getContext(), "com.codepath.fileprovider", photoFile);
                 gallery.putExtra(MediaStore.EXTRA_OUTPUT, fileProvider);
-//                gallery.setData(fileProvider);
 
                 // If you call startActivityForResult() using an intent that no app can handle, your app will crash.
                 // So as long as the result is not null, it's safe to use the intent.
@@ -163,14 +159,12 @@ public class ComposeFragment extends Fragment {
             // user selected image from gallery
             if (data != null) {
                 // by this point we have the camera photo on disk
-//                Bitmap selectedImage = BitmapFactory.decodeFile(photoFile.getAbsolutePath());
                 Uri photoUri = data.getData();
 
                 // Do something with the photo based on Uri
                 Bitmap selectedImage = null;
                 try {
                     selectedImage = MediaStore.Images.Media.getBitmap(this.getContext().getContentResolver(), photoUri);
-                    // TODO - override photoFile
                     photoFile = saveBitmap(selectedImage, "");
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -262,27 +256,5 @@ public class ComposeFragment extends Fragment {
             }
         });
         miActionProgressItem.setVisibility(View.INVISIBLE);
-    }
-
-    // TODO - fix
-    private void loadTopPosts() {
-        final Post.Query postsQuery = new Post.Query();
-        postsQuery.getTop().withUser();
-
-        // get all posts in a background thread
-        postsQuery.findInBackground(new FindCallback<Post>() {
-            @Override
-            public void done(List<Post> objects, ParseException e) {
-                if (e == null) {
-                    for (int i = 0; i < objects.size(); ++i) {
-                        Log.d("HomeActivity", "Post[" + i + "] = "
-                                + objects.get(i).getDescription()
-                                + "\nusername = " + objects.get(i).getUser().getUsername());
-                    }
-                } else {
-                    e.printStackTrace();
-                }
-            }
-        });
     }
 }

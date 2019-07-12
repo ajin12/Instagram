@@ -119,9 +119,7 @@ public class PostsFragment extends Fragment {
         } else {
             postsQuery.whereEqualTo(Post.KEY_USER, profileToFilter);
         }
-
-//        postsQuery.getTop().withUser();
-
+        
         // get the latest 20 posts, order will show up newest to oldest of this group
         postsQuery.orderByDescending("createdAt");
         // get all posts in a background thread
